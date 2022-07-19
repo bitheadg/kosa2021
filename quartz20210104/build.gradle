@@ -1,0 +1,132 @@
+buildscript {
+  ext {
+    springBootVersion = '2.2.2.RELEASE'
+  }
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+  }
+}
+
+plugins {
+	//below not compliant with eclipse gradle plugin
+	//id 'org.springframework.boot' version '2.3.0.RC1'
+	//id 'spring-boot'
+	id 'org.springframework.boot' version '2.2.2.RELEASE'
+	//id 'org.springframework.boot' version '2.1.5.RELEASE' (O)
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id 'java'
+	//for tomcat deploy
+	id 'war'
+	
+	//to check dependency, rebuild this after applying below
+	id 'eclipse'
+	
+	id 'eclipse-wtp'
+}
+
+//jar.enabled = true
+
+//group = 'com.example'
+group = 'aa.spring'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+//src/main/webapp default web sources directory for the content of the WAR file.
+//We can change the value with the webAppDirName property.
+//// if not for distributable for prod
+//project.webAppDirName = 'wepapp' //!=webapp ==> be careful with spelling
+
+//mainly for executable packaging
+bootWar{
+	archiveBaseName="aa.spring"
+	archiveVersion="0.0.1-SNAPSHOT"
+}
+
+//Spring Boot Gradle plugin will disable the task war by default
+/*
+bootWar.enabled = false
+war.enabled = true
+war {
+	enabled = true
+}
+*/
+
+repositories {
+	mavenCentral()
+	maven { url 'https://repo.spring.io/milestone' }
+	maven { url 'https://repo.spring.io/plugins-release/' }
+}
+
+dependencies {
+    //for tomcat deploy
+    providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat' 
+	//for tomcat-embedded, jsp
+	providedRuntime 'org.apache.tomcat.embed:tomcat-embed-jasper'
+	
+	//Spring Web MVC
+	//implementation "org.springframework:spring-webmvc:4.1.6.RELEASE"
+	//compile 'javax.servlet:jstl:1.2'    // jsp
+	implementation 'javax.servlet:jstl:1.2'    // jsp 
+	
+	implementation 'org.springframework.boot:spring-boot-starter'
+	
+	//for RestController ???
+	implementation 'org.springframework.boot:spring-boot-dependencies:2.2.2.RELEASE'
+	
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    
+    //auto-detect of jsp
+    implementation 'org.springframework.boot:spring-boot-devtools'
+    
+    //implementation quartz-mvc, ^
+    //quartz
+    implementation 'org.quartz-scheduler:quartz:2.3.0'
+    implementation 'org.springframework:spring-context-support'
+    //for org.springframework.transaction.PlatformTransactionManager
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    //h2 in-memory database
+    implementation 'com.h2database:h2'
+    
+    implementation 'org.projectlombok:lombok:1.18.6'
+    annotationProcessor 'org.projectlombok:lombok:1.18.6'
+    
+    implementation 'com.google.code.gson:gson:2.8.0'
+    
+    //security
+    //implementation 'org.springframework.boot:spring-boot-starter-security'
+    //implementation quartz-mvc, $
+}
+
+test {
+	useJUnitPlatform()
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////
+ext {
+   currentProjectjGradleBuildFile = "$projectDir/build.gradle"
+}
+
+
+
+
+/*
+def addTask(a, b){
+	println a+b
+}
+*/
+def closureWithTwoArgs = { a,b 
+	-> a+b 
+}
+
+task testGroovy {
+	group = 'aa.custom.gradle.task'
+	
+	doLast {
+		assert closureWithTwoArgs(1,2) == 3
+	}
+}
+
+
